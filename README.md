@@ -55,7 +55,7 @@ The Timer View Controller displays a countdown of the current round and has a St
 
 ###Step 4: Create a timer class
 
-Use a separate [Timer]() class to manage the timer. This timer class holds the minutes and seconds and has a method to begin counting down. 
+Use a separate [Timer](https://github.com/DevMountain/The-Pomodoro/blob/solution-day1/The-Pomodoro-iOS8/Timer.m) class to manage the timer. This timer class holds the minutes and seconds and has a method to begin counting down. 
 Pay attention to what the class does for you, walk through each method, understand what it is doing.
 
 - Create a ```Timer``` Class as a Shared Instance
