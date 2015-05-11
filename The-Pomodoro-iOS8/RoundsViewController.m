@@ -32,6 +32,9 @@ static NSString *reuseID = @"reuseID";
     return self;
 }
 
+//Set the tableView delegate and datasource to self.
+//register the class
+//add tableview as the subview of the viewControllers view
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
@@ -47,6 +50,7 @@ static NSString *reuseID = @"reuseID";
     // Dispose of any resources that can be recreated.
 }
 
+//Unregister for notifications
 - (void)dealloc
 {
     [self unregisterForNotifications];
@@ -54,6 +58,9 @@ static NSString *reuseID = @"reuseID";
 
 #pragma mark - TableView Delegate Methods
 
+//Set the currentRound for the index selected
+//call the roundSelected method which sets the minutes and seconds accordingly
+//Cancel the timer
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [RoundsController sharedInstance].currentRound = indexPath.row;
@@ -82,11 +89,15 @@ static NSString *reuseID = @"reuseID";
 
 #pragma mark - Notification Methods
 
+//Use the notficationCenter to register for the notification
 - (void)registerForNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roundComplete) name:RoundCompleteNotification object:nil];
 }
 
+//Compare the current round to the roundTimes.count to see if there are still times left to be ran.
+//If there are still times left add one to current round and then update the time.
+//Otherwise set currentRound to 0
 - (void)roundComplete
 {
     if ([RoundsController sharedInstance].currentRound < [RoundsController sharedInstance].roundTimes.count - 1)
@@ -103,6 +114,8 @@ static NSString *reuseID = @"reuseID";
     }
 }
 
+
+//Unregister the notifications
 - (void)unregisterForNotifications
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
