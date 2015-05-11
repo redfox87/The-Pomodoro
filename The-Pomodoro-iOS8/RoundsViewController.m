@@ -92,7 +92,7 @@ static NSString *reuseID = @"reuseID";
 //Use the notficationCenter to register for the notification
 - (void)registerForNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roundComplete) name:RoundCompleteNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roundComplete) name:TimerCompleteNotification object:nil];
 }
 
 //Compare the current round to the roundTimes.count to see if there are still times left to be ran.
