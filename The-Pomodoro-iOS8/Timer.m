@@ -33,11 +33,11 @@
     return sharedInstance;
 }
 
-//set isON to No or False and call roundCompleteNotification
+//set isON to No or False and call TimerCompleteNotification
 - (void)endTimer
 {
     self.isOn = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:RoundCompleteNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:TimerCompleteNotification object:nil];
 }
 
 //If seconds in larger than 0 subtract one & call secondTickNotification
