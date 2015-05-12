@@ -10,7 +10,7 @@
 #import "RoundsController.h"
 #import "Timer.h"
 
-static NSString *reuseID = @"reuseID";
+static NSString *cellID = @"cellID";
 
 @interface RoundsViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -24,24 +24,22 @@ static NSString *reuseID = @"reuseID";
 {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         [self registerForNotifications];
     }
     
     return self;
 }
 
-//Set the tableView delegate and datasource to self.
-//register the class
-//add tableview as the subview of the viewControllers view
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.frame style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:reuseID];
+    
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:cellID];
+    
     [self.view addSubview:self.tableView];
 }
 
@@ -50,74 +48,49 @@ static NSString *reuseID = @"reuseID";
     // Dispose of any resources that can be recreated.
 }
 
-//Unregister for notifications
-- (void)dealloc
-{
-    [self unregisterForNotifications];
-}
-
-#pragma mark - TableView Delegate Methods
-
-//Set the currentRound for the index selected
-//call the roundSelected method which sets the minutes and seconds accordingly
-//Cancel the timer
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [RoundsController sharedInstance].currentRound = indexPath.row;
     [[RoundsController sharedInstance] roundSelected];
     [[Timer sharedInstance] cancelTimer];
 }
 
-#pragma mark - TableView DataSource Methods
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:reuseID];
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
     
     NSArray *roundsArray = [RoundsController sharedInstance].roundTimes;
     NSNumber *minutes = roundsArray[indexPath.row];
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%li minutes", (long)[minutes integerValue]];
+    cell.textLabel.text = [NSString stringWithFormat:@"%li", (long)[minutes integerValue]];
     
     return cell;
 }
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [RoundsController sharedInstance].roundTimes.count;
 }
 
-#pragma mark - Notification Methods
-
-//Use the notficationCenter to register for the notification
-- (void)registerForNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roundComplete) name:TimerCompleteNotification object:nil];
-}
-
-//Compare the current round to the roundTimes.count to see if there are still times left to be ran.
-//If there are still times left add one to current round and then update the time.
-//Otherwise set currentRound to 0
-- (void)roundComplete
-{
-    if ([RoundsController sharedInstance].currentRound < [RoundsController sharedInstance].roundTimes.count - 1)
-    {
+- (void)roundComplete {
+    if ([RoundsController sharedInstance].currentRound < [RoundsController sharedInstance].roundTimes.count - 1) {
         [RoundsController sharedInstance].currentRound++;
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[RoundsController sharedInstance].currentRound inSection:0] animated:YES scrollPosition:UITableViewScrollPositionNone];
         [[RoundsController sharedInstance] roundSelected];
-    }
-    else
-    {
+    } else {
         [RoundsController sharedInstance].currentRound = 0;
         [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:[RoundsController sharedInstance].currentRound inSection:0] animated:YES scrollPosition:UITableViewScrollPositionNone];
         [[RoundsController sharedInstance] roundSelected];
     }
 }
 
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(roundComplete) name:TimerCompleteNotification object:nil];
+}
 
-//Unregister the notifications
-- (void)unregisterForNotifications
-{
+- (void)dealloc {
+    [self unregisterForNotifications];
+}
+
+
+- (void)unregisterForNotifications {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 

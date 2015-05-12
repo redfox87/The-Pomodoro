@@ -13,7 +13,7 @@
 @property (assign, nonatomic) NSInteger currentRound;
 @property (strong, nonatomic, readonly) NSArray *roundTimes;
 
-+ (RoundsController *)sharedInstance;
++ (instancetype)sharedInstance;
 - (void)roundSelected;
 
 @end

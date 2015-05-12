@@ -17,8 +17,7 @@
 
 @implementation RoundsController
 
-//Create a shared instance
-+ (RoundsController *)sharedInstance {
++ (instancetype)sharedInstance {
     static RoundsController *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -28,17 +27,16 @@
     return sharedInstance;
 }
 
-//Set the minutes property using the roundTimes array and the currentRound as the index.
-- (void)roundSelected
-{
-    [Timer sharedInstance].minutes = [[self roundTimes][self.currentRound] integerValue];
-    [Timer sharedInstance].seconds = 0;
+
+- (void)roundSelected {
+    Timer *timer = [Timer sharedInstance];
+    timer.minutes = [[self roundTimes][self.currentRound] integerValue];
+    timer.seconds = 0;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:NewRoundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NewRoundNotification object:self userInfo:nil];
 }
 
--(NSArray *)roundTimes
-{
+-(NSArray *)roundTimes {
     return @[@25, @5, @25, @5, @25, @5, @25, @15];
 }
 
